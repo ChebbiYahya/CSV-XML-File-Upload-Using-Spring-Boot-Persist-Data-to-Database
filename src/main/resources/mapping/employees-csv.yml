@@ -1,0 +1,25 @@
+delimiter: ","
+hasHeader: true
+columns:
+  - name: id
+    index: 0
+    type: LONG
+  - name: salary
+    index: 1
+    type: DECIMAL
+  - name: firstName
+    index: 2
+    type: STRING
+  - name: lastName
+    index: 3
+    type: STRING
+  - name: position
+    index: 4
+    type: STRING
+  - name: department
+    index: 5
+    type: STRING
+  - name: hireDate
+    index: 6
+    type: LOCAL_DATE   # format ISO yyyy-MM-dd
+
