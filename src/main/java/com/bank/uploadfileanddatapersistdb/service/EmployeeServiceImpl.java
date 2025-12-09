@@ -3,6 +3,7 @@ package com.bank.uploadfileanddatapersistdb.service;
 
 import com.bank.uploadfileanddatapersistdb.DTO.EmployeeDto;
 import com.bank.uploadfileanddatapersistdb.entity.Employee;
+import com.bank.uploadfileanddatapersistdb.exception.EmployeeNotFoundException;
 import com.bank.uploadfileanddatapersistdb.mapper.EmployeeMapper;
 import com.bank.uploadfileanddatapersistdb.repository.EmployeeRepository;
 import com.bank.uploadfileanddatapersistdb.interfaces.EmployeeService;
@@ -37,5 +38,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .map(mapper::toEntity)
                 .toList();
         repository.saveAll(entities);
+    }
+
+    @Override
+    public List<Employee> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Employee getEmployeeById(Long id) {
+        return repository.findById(id).orElseThrow(()-> new EmployeeNotFoundException("Employee not found with id: " + id));
     }
 }
