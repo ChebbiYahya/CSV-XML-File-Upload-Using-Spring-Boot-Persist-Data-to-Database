@@ -22,7 +22,9 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -53,10 +55,19 @@ public class FileIngestionServiceImpl implements FileIngestionService {
             int lineNumber = 0;
             List<EmployeeDto> employees = new ArrayList<>();
 
+            // Map headerName -> index
+            Map<String, Integer> headerIndexMap = new HashMap<>();
+
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
 
                 if (lineNumber == 1 && hasHeader) {
+                    String[] headers = line.split(delimiter);
+                    for (int i = 0; i < headers.length; i++) {
+                        String h = headers[i].trim();
+                        headerIndexMap.put(h, i);
+                    }
+                    // on passe à la ligne suivante (les données)
                     continue;
                 }
 
@@ -69,7 +80,14 @@ public class FileIngestionServiceImpl implements FileIngestionService {
                 EmployeeDto dto = new EmployeeDto();
 
                 for (EmployeeMappingProperties.CsvColumn column : csvMapping.getColumns()) {
-                    int index = column.getIndex();
+                    Integer colIndex = null;
+
+                    // priorité au header si configuré
+                    if (column.getHeader() != null) {
+                        colIndex = headerIndexMap.get(column.getHeader());
+                    } else {
+                        colIndex = column.getIndex();
+                    }
 
 //                    if (index >= tokens.length) {
 //                        throw new FileProcessingException("Missing column at index " + index +
@@ -82,8 +100,8 @@ public class FileIngestionServiceImpl implements FileIngestionService {
 
                     // Si la colonne n'existe pas dans cette ligne → on prend rawValue = null
                     String rawValue = null;
-                    if (index < tokens.length) {
-                        rawValue = tokens[index].trim();
+                    if (colIndex < tokens.length) {
+                        rawValue = tokens[colIndex].trim();
                         if (rawValue.isEmpty()) {
                             rawValue = null; // on traite vide comme "absent"
                         }
@@ -169,8 +187,7 @@ public class FileIngestionServiceImpl implements FileIngestionService {
 
         // Si aucune valeur (colonne / tag manquant ou vide)
         if (rawValue == null) {
-            // 👉 Comportement par défaut : on laisse le champ tel quel (null).
-            // Si tu veux une valeur par défaut pour certains champs, tu peux le faire ici.
+
             switch (fieldName) {
                 case "salary" -> {
                     // Valeur par défaut pour salary si le champ n'est pas dans le XML/CSV

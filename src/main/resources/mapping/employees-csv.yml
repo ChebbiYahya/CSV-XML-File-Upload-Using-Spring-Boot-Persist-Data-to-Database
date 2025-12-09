@@ -2,23 +2,23 @@ delimiter: ","
 hasHeader: true
 columns:
   - name: id
-    index: 0
+    header: id
     type: LONG
   - name: firstName
-    index: 1
+    header: firstName
     type: STRING
   - name: lastName
-    index: 2
+    header: lastName
     type: STRING
   - name: position
-    index: 3
+    header: position
     type: STRING
   - name: department
-    index: 4
+    header: department
     type: STRING
   - name: hireDate
-    index: 5
+    header: hireDate
     type: LOCAL_DATE   # format ISO yyyy-MM-dd
   - name: salary
-    index: 6
+    header: salary
     type: DECIMAL
