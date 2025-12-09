@@ -71,14 +71,26 @@ public class FileIngestionServiceImpl implements FileIngestionService {
                 for (EmployeeMappingProperties.CsvColumn column : csvMapping.getColumns()) {
                     int index = column.getIndex();
 
-                    if (index >= tokens.length) {
-                        throw new FileProcessingException("Missing column at index " + index +
-                                " for line " + lineNumber);
+//                    if (index >= tokens.length) {
+//                        throw new FileProcessingException("Missing column at index " + index +
+//                                " for line " + lineNumber);
+//                    }
+//
+//
+//
+//                    String rawValue = tokens[index].trim();
+
+                    // Si la colonne n'existe pas dans cette ligne → on prend rawValue = null
+                    String rawValue = null;
+                    if (index < tokens.length) {
+                        rawValue = tokens[index].trim();
+                        if (rawValue.isEmpty()) {
+                            rawValue = null; // on traite vide comme "absent"
+                        }
                     }
 
+                    // On laisse applyField décider quoi faire (mettre null, 0, etc.)
 
-
-                    String rawValue = tokens[index].trim();
                     applyField(dto, column.getName(), column.getType(), rawValue, lineNumber);
                 }
 
@@ -121,11 +133,22 @@ public class FileIngestionServiceImpl implements FileIngestionService {
                     String tagName = field.getTag();
                     NodeList values = element.getElementsByTagName(tagName);
 
-                    if (values.getLength() == 0) {
-                        throw new FileProcessingException("Tag <" + tagName + "> not found in employee index " + i);
+//                    if (values.getLength() == 0) {
+//                        throw new FileProcessingException("Tag <" + tagName + "> not found in employee index " + i);
+//                    }
+//                    String rawValue = values.item(0).getTextContent().trim();
+
+                    String rawValue = null;
+                    if (values.getLength() > 0) {
+                        rawValue = values.item(0).getTextContent();
+                        if (rawValue != null) {
+                            rawValue = rawValue.trim();
+                            if (rawValue.isEmpty()) {
+                                rawValue = null;
+                            }
+                        }
                     }
 
-                    String rawValue = values.item(0).getTextContent().trim();
                     applyField(dto, field.getName(), field.getType(), rawValue, i + 1);
                 }
 
@@ -142,7 +165,25 @@ public class FileIngestionServiceImpl implements FileIngestionService {
     // ================== Helpers ==================
 
     private void applyField(EmployeeDto dto, String fieldName, String type, String rawValue, int index) {
-        if (rawValue == null || rawValue.isEmpty()) return;
+//        if (rawValue == null || rawValue.isEmpty()) return;
+
+        // Si aucune valeur (colonne / tag manquant ou vide)
+        if (rawValue == null) {
+            // 👉 Comportement par défaut : on laisse le champ tel quel (null).
+            // Si tu veux une valeur par défaut pour certains champs, tu peux le faire ici.
+            switch (fieldName) {
+                case "salary" -> {
+                    // Valeur par défaut pour salary si le champ n'est pas dans le XML/CSV
+                    if (dto.getSalary() == null) {
+                        dto.setSalary(BigDecimal.ZERO);
+                    }
+                }
+                default -> {
+                    // ne rien faire => le champ reste null
+                }
+            }
+            return;
+        }
 
         try {
             switch (fieldName) {
