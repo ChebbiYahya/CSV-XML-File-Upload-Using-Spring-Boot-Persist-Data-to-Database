@@ -1,0 +1,7 @@
+package com.bank.uploadfileanddatapersistdb.exception;
+
+public class MissingRequiredFieldException extends ValidationException {
+    public MissingRequiredFieldException(String message) {
+        super(message);
+    }
+}

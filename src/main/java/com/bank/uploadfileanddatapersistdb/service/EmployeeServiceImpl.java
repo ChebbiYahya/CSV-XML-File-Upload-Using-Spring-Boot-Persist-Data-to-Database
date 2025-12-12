@@ -21,10 +21,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository repository;
     private final EmployeeMapper mapper;
 
-//    public EmployeeServiceImpl(EmployeeRepository repository, EmployeeMapper mapper) {
-//        this.repository = repository;
-//        this.mapper = mapper;
-//    }
+
 
 //    @Transactional :
 //    soit toute la liste est sauvegardée
@@ -48,5 +45,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployeeById(Long id) {
         return repository.findById(id).orElseThrow(()-> new EmployeeNotFoundException("Employee not found with id: " + id));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return repository.existsById(id);
     }
 }

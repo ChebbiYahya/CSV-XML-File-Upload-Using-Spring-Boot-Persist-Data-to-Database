@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileIngestionController {
     private final FileIngestionService fileIngestionService;
 
-//    public FileIngestionController(FileIngestionService fileIngestionService) {
-//        this.fileIngestionService = fileIngestionService;
-//    }
+
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,

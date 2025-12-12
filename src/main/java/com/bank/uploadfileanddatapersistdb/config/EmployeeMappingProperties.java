@@ -66,6 +66,7 @@ public class EmployeeMappingProperties {
         private Integer index; // optionnel
         private String header; // nom de la colonne dans le CSV
         private String type;
+        private boolean required;
     }
 
     @Getter
@@ -86,5 +87,6 @@ public class EmployeeMappingProperties {
         private String name;
         private String tag;
         private String type;
+        private boolean required;
     }
 }
