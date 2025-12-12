@@ -12,4 +12,5 @@ public class LogChargementDetailDto {
     private Integer lineNumber;
     private LineStatus status;
     private String detailProblem;
+
 }

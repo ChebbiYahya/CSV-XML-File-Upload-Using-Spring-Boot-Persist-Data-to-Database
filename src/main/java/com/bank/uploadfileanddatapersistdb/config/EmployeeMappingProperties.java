@@ -63,7 +63,7 @@ public class EmployeeMappingProperties {
     @AllArgsConstructor
     public static class CsvColumn {
         private String name; // nom logique (DTO)
-        private Integer index; // optionnel
+        private Integer index;
         private String header; // nom de la colonne dans le CSV
         private String type;
         private boolean required;

@@ -40,11 +40,11 @@ public class LogChargement {
     private Integer failedLines;
 
     @OneToMany(mappedBy = "logChargement", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default                      // 👈 IMPORTANT
+    @Builder.Default
     private List<LogChargementDetail> details = new ArrayList<>();
 
     public void addDetail(LogChargementDetail detail) {
-        if (this.details == null) {       // 👈 ceinture + bretelles
+        if (this.details == null) {
             this.details = new ArrayList<>();
         }
         detail.setLogChargement(this);

@@ -214,7 +214,6 @@ public class FileIngestionServiceImpl implements FileIngestionService {
 
         try {
 
-
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file.getInputStream());
